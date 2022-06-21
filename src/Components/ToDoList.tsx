@@ -1,5 +1,7 @@
-import React, {ChangeEvent, KeyboardEvent, ChangeEventHandler, useState} from 'react';
+import React, {ChangeEvent} from 'react';
 import {filterValuesType} from '../App';
+import AddItemForm from './AddItemForm';
+import EditableSpan from './EditableSpan';
 
 
 export type TaskType = {
@@ -11,44 +13,20 @@ export type TaskType = {
 type ToDoListPropsType = {
     id: string,
     title: string,
-    error: boolean,
     filter: string,
     tasks: Array<TaskType>,
     removeTask: (listId: string, id: string) => void,
     addTask: (listId: string, value: string) => void,
     changeFilter: (value: filterValuesType, toDoListId: string) => void,
     changeStatus: (listId: string, id: string, isDone: boolean) => void,
-    setError: (error: boolean) => void,
-    removeToDoList: (listId: string)=>void
+    removeToDoList: (listId: string) => void,
+    changeTitle: (listId: string, taskId: string, title: string) => void
+    changeListTitle: (listId: string, title: string) => void
 }
 
 
 function ToDoList(props: ToDoListPropsType) {
-    const [inputValue, setInputValue] = useState('')
 
-    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        props.setError(false)
-        setInputValue(e.currentTarget.value)
-    }
-    const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.charCode === 13) {
-            props.addTask(props.id, inputValue)
-            setInputValue('')
-
-        }
-    };
-
-    const addTask = (inputValue: string) => {
-        if (inputValue.trim() !== '') {
-            props.addTask(props.id, inputValue.trim())
-            props.setError(false)
-            setInputValue('')
-        } else {
-            setInputValue('')
-            props.setError(true)
-        }
-
-    }
 
     const onAllClickHandler = () => {
         props.changeFilter('all', props.id)
@@ -64,26 +42,23 @@ function ToDoList(props: ToDoListPropsType) {
         props.removeToDoList(props.id)
     }
 
+    const addTask = (value: string) => {
+        props.addTask(props.id, value)
+    }
+
+    const changeListTitle = (title: string) => {
+        props.changeListTitle(props.id, title)
+    }
+
+
     return (
         <div>
-            <h3>{props.title}<button onClick={removeToDoList}>X
-            </button></h3>
-            <div>
-                <input
-                    value={inputValue}
-                    onChange={(e) => onChangeHandler(e)}
-                    onKeyPress={(e) => onKeyPressHandler(e)}
-                    className={props.error ? 'error' : ''}
-                />
-                <button onClick={() => {
-                    addTask(inputValue)
-                }}>+
-                </button>
+            <h3>
+                <EditableSpan title={props.title} changeTitle={changeListTitle}/>
+                <button onClick={removeToDoList}>X</button>
+            </h3>
 
-                <div className={props.error ? 'error-message' : 'none-error'}>
-                    Field Is Required
-                </div>
-            </div>
+            <AddItemForm addItem={addTask}/>
 
             <ul>
                 {
@@ -97,10 +72,17 @@ function ToDoList(props: ToDoListPropsType) {
                                 props.removeTask(props.id, task.id)
                             }
 
+                            const changeTitle = (title: string) => {
+                                props.changeTitle(props.id, task.id, title)
+                            }
+
                             return <li key={task.id}>
                                 <input type="checkbox" checked={task.isDone}
                                        onChange={onStatusChangeHandler}/>
-                                <span className={!task.isDone ? 'is-done' : ''}>{task.title}</span>
+
+                                <EditableSpan changeTitle={changeTitle}
+                                              title={task.title}/>
+
                                 <button onClick={removeClickHandler}>X
                                 </button>
                             </li>
@@ -122,5 +104,6 @@ function ToDoList(props: ToDoListPropsType) {
         </div>
     )
 }
+
 
 export default ToDoList
