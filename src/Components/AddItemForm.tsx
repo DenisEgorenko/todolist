@@ -1,4 +1,6 @@
-import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+import React, {ChangeEvent, KeyboardEvent, KeyboardEventHandler, useState} from 'react';
+import {Button, IconButton, TextField} from '@mui/material';
+import {ControlPoint} from '@mui/icons-material';
 
 type AddItemFormProps = {
     addItem: (value: string) => void,
@@ -7,15 +9,15 @@ type AddItemFormProps = {
 function AddItemForm(props: AddItemFormProps) {
 
     const [inputValue, setInputValue] = useState('')
-    const [error, setError] = useState<boolean>(false)
+    const [error, setError] = useState<string>('')
 
-    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setError(false)
+    const onChangeHandler = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setError('')
         setInputValue(e.currentTarget.value)
     }
 
-    const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
+    const onKeyPressHandler = (event: KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === 'Enter') {
             props.addItem(inputValue)
             setInputValue('')
 
@@ -25,30 +27,29 @@ function AddItemForm(props: AddItemFormProps) {
     const addTask = (inputValue: string) => {
         if (inputValue.trim() !== '') {
             props.addItem(inputValue.trim())
-            setError(false)
+            setError('')
             setInputValue('')
         } else {
             setInputValue('')
-            setError(true)
+            setError('Требуется название')
         }
     }
 
     return (
         <div>
-            <input
+            <TextField
+                error={!!error}
+                variant={'filled'}
+                label={"Введите название"}
                 value={inputValue}
-                onChange={(e) => onChangeHandler(e)}
-                onKeyPress={(e) => onKeyPressHandler(e)}
-                className={error ? 'error' : ''}
+                onChange={onChangeHandler}
+                onKeyPress={onKeyPressHandler}
+                helperText={error}
             />
-            <button onClick={() => {
-                addTask(inputValue)
-            }}>+
-            </button>
+            <IconButton onClick={() => {addTask(inputValue)}}>
+                <ControlPoint/>
+            </IconButton>
 
-            <div className={error ? 'error-message' : 'none-error'}>
-                Field Is Required
-            </div>
         </div>
     )
 }
