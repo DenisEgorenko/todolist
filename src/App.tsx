@@ -5,11 +5,16 @@ import {v1} from 'uuid';
 import AddItemForm from './Components/AddItemForm';
 import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from '@mui/material';
 import {Menu} from '@mui/icons-material';
+import {
+    ChangeToDoListFilterActionType,
+    ChangeToDoListTitleActionType,
+    toDoListsReducer
+} from './State/ToDoListsReducer';
 
 
 export type filterValuesType = 'all' | 'active' | 'completed'
 
-type toDoListType = {
+export type toDoListType = {
     id: string,
     title: string,
     filter: filterValuesType
@@ -73,16 +78,18 @@ function App() {
     }
 
     function changeFilter(value: filterValuesType, toDoListId: string) {
-        let list = toDoLists.find(list => list.id === toDoListId)
-        if (list) {
-            list.filter = value
-            setToDoLists([...toDoLists])
+        const action: ChangeToDoListFilterActionType = {
+            type: 'CHANGE-TODOLIST-FILTER',
+            id: toDoListId,
+            filter: value
         }
+        const listChanged = toDoListsReducer(toDoLists, action)
+        setToDoLists(listChanged)
     }
 
     const removeToDoList = (listId: string) => {
-        toDoLists = toDoLists.filter(tl => tl.id !== listId)
-        setToDoLists([...toDoLists])
+        const endState = toDoListsReducer(toDoLists, {type: 'REMOVE-TODOLIST', id: listId})
+        setToDoLists(endState)
 
         delete allTasks[listId]
         setAllTasks({...allTasks})
@@ -91,8 +98,9 @@ function App() {
 
     const addToDoList = (value: string) => {
         const newId = v1()
-        const newToDo: toDoListType = {id: newId, title: value, filter: 'all'}
-        setToDoLists([newToDo, ...toDoLists])
+        const newToDoList = toDoListsReducer(toDoLists, {type: 'ADD-TODOLIST', title: value, newId: newId})
+
+        setToDoLists(newToDoList)
         setAllTasks({...allTasks, [newId]: []})
     }
 
@@ -106,12 +114,13 @@ function App() {
     }
 
     const changeListTitle = (listId: string, title: string) => {
-        let list = toDoLists.find(list => list.id === listId)
-
-        if (list) {
-            list.title = title
-            setToDoLists([...toDoLists])
+        const action: ChangeToDoListTitleActionType = {
+            type: 'CHANGE-TODOLIST-TITLE',
+            id: listId,
+            title: title
         }
+        let listChanged = toDoListsReducer(toDoLists, action)
+        setToDoLists(listChanged)
     }
 
     return (
