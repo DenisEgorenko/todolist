@@ -7,7 +7,7 @@ import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography}
 import {Menu} from '@mui/icons-material';
 import {
     ChangeToDoListFilterActionType,
-    ChangeToDoListTitleActionType,
+    ChangeToDoListTitleActionType, RemoveToDoListAC,
     toDoListsReducer
 } from './State/ToDoListsReducer';
 
@@ -88,7 +88,7 @@ function App() {
     }
 
     const removeToDoList = (listId: string) => {
-        const endState = toDoListsReducer(toDoLists, {type: 'REMOVE-TODOLIST', id: listId})
+        const endState = toDoListsReducer(toDoLists, RemoveToDoListAC(listId))
         setToDoLists(endState)
 
         delete allTasks[listId]
