@@ -1,8 +1,27 @@
-.App {
-  padding: 30px;
-  display: flex;
-}
+/*.App {*/
+/*  font-family: Roboto, sans-serif;*/
+/*  padding: 30px;*/
+/*  display: flex;*/
+/*}*/
 
-.App > div {
-  margin-right: 50px;
+/*.App > div {*/
+/*  margin-right: 50px;*/
+/*}*/
+
+
+/*.error{*/
+/*  border: red 1px solid;*/
+/*}*/
+
+/*.error-message{*/
+/*  color: red;*/
+/*}*/
+
+/*.none-error{*/
+/*  display: none;*/
+/*}*/
+
+.active-filter{
+  background-color: #1eabc4 !important;
+  color: white !important;
 }
