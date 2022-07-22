@@ -1,6 +1,6 @@
-import {TasksStateType} from '../App';
 import {v1} from "uuid";
-import {AddToDoListActionType, RemoveToDoListActionType} from "./ToDoListsReducer";
+import {AddToDoListActionType, RemoveToDoListActionType, toDoList1, toDoList2} from "./ToDoListsReducer";
+import {TaskType} from "../Components/ToDoList";
 
 const REMOVE_TASK = 'REMOVE-TASK'
 const ADD_TASK = 'ADD-TASK'
@@ -16,7 +16,7 @@ export type removeTaskActionType = {
 
 export type addTaskActionType = {
     type: 'ADD-TASK',
-    listName: string,
+    value: string,
     listId: string,
 }
 
@@ -42,8 +42,27 @@ type ActionType =
     | AddToDoListActionType
     | RemoveToDoListActionType
 
+export type TasksStateType = {
+    [key: string]: Array<TaskType>
+}
 
-export const TasksReducer = (state: TasksStateType, action: ActionType): TasksStateType => {
+const initialState: TasksStateType = {
+    [toDoList1]: [
+        {id: v1(), title: 'HTML&CSS', isDone: true},
+        {id: v1(), title: 'JS', isDone: false},
+        {id: v1(), title: 'ReactJS', isDone: false}
+    ],
+    [toDoList2]: [
+        {id: v1(), title: 'HTML&CSS', isDone: true},
+        {id: v1(), title: 'JS', isDone: true},
+        {id: v1(), title: 'ReactJS', isDone: false},
+        {id: v1(), title: 'ReactJS', isDone: true},
+        {id: v1(), title: 'ReactJS', isDone: false},
+        {id: v1(), title: 'ReactJS', isDone: true}
+    ]
+}
+
+export const TasksReducer = (state: TasksStateType = initialState, action: ActionType): TasksStateType => {
     switch (action.type) {
         case REMOVE_TASK : {
             const stateCopy = {...state}
@@ -52,7 +71,7 @@ export const TasksReducer = (state: TasksStateType, action: ActionType): TasksSt
         }
 
         case ADD_TASK : {
-            const newTask = {id: v1(), title: action.listName, isDone: false}
+            const newTask = {id: v1(), title: action.value, isDone: false}
             const stateCopy = {...state}
             const tasks = stateCopy[action.listId]
             const newTasks = [newTask, ...tasks]
@@ -86,7 +105,7 @@ export const TasksReducer = (state: TasksStateType, action: ActionType): TasksSt
         }
 
         default: {
-            throw new Error('There is no such action type')
+            return state
         }
     }
 }
@@ -100,10 +119,10 @@ export const removeTaskAC = (taskId: string, listId: string): removeTaskActionTy
     }
 }
 
-export const addTaskAC = (listName: string, listId: string): addTaskActionType => {
+export const addTaskAC = (value: string, listId: string): addTaskActionType => {
     return {
         type: ADD_TASK,
-        listName: listName,
+        value: value,
         listId: listId
     }
 }
