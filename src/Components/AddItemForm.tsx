@@ -6,7 +6,9 @@ type AddItemFormProps = {
     addItem: (value: string) => void,
 }
 
-function AddItemForm(props: AddItemFormProps) {
+export const AddItemForm = React.memo((props: AddItemFormProps) => {
+
+    console.log('Add Item Form')
 
     const [inputValue, setInputValue] = useState('')
     const [error, setError] = useState<string>('')
@@ -20,7 +22,6 @@ function AddItemForm(props: AddItemFormProps) {
         if (event.key === 'Enter') {
             props.addItem(inputValue)
             setInputValue('')
-
         }
     };
 
@@ -46,13 +47,12 @@ function AddItemForm(props: AddItemFormProps) {
                 onKeyPress={onKeyPressHandler}
                 helperText={error}
             />
-            <IconButton onClick={() => {addTask(inputValue)}}>
+            <IconButton onClick={() => {
+                addTask(inputValue)
+            }}>
                 <ControlPoint/>
             </IconButton>
 
         </div>
     )
-}
-
-
-export default AddItemForm
+})

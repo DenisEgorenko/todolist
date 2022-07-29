@@ -1,12 +1,13 @@
 import React, {ChangeEvent, useState} from 'react';
 import {Input} from '@mui/material';
+import {useDispatch} from "react-redux";
 
 type EditableSpanProps = {
     title: string;
     changeTitle: (title: string) => void
 }
 
-function EditableSpan(props: EditableSpanProps) {
+export const EditableSpan = React.memo((props: EditableSpanProps) => {
 
     const [editMode, setEditMode] = useState(false)
     const [title, setTitle] = useState('')
@@ -20,16 +21,12 @@ function EditableSpan(props: EditableSpanProps) {
         props.changeTitle(title)
     }
 
-
     const onChangeInputHandler = (e: ChangeEvent<HTMLInputElement>) => setTitle(e.currentTarget.value)
-
-
 
     return (
         editMode
             ? <Input onChange={onChangeInputHandler} onBlur={activateViewMode} value={title} autoFocus/>
             : <span onDoubleClick={activateEditMode}>{props.title}</span>
     )
-}
+})
 
-export default EditableSpan
