@@ -1,6 +1,5 @@
 import React, {ChangeEvent, useState} from 'react';
 import {Input} from '@mui/material';
-import {useDispatch} from "react-redux";
 
 type EditableSpanProps = {
     title: string;

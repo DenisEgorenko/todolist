@@ -1,29 +1,27 @@
-import {useDispatch} from "react-redux";
-import React, {ChangeEvent} from "react";
-import {changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "../State/TasksReducer";
-import {Checkbox, IconButton} from "@mui/material";
-import {EditableSpan} from "./EditableSpan";
-import {Delete} from "@mui/icons-material";
-import {TaskType} from "./ToDoList";
+import React, {ChangeEvent} from 'react';
+import {Checkbox, IconButton} from '@mui/material';
+import {EditableSpan} from './EditableSpan';
+import {Delete} from '@mui/icons-material';
+import {TaskType} from './ToDoList';
 
 type taskPropsType = {
-    id: string
     task: TaskType
+    onStatusChangeHandler: (taskID: string, value: boolean) => void
+    removeClickHandler: (taskID: string) => void
+    changeTitleHandler: (taskID: string, title: string) => void
 }
 export const Task = React.memo((props: taskPropsType) => {
 
-    const dispatch = useDispatch()
-
     const onStatusChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        dispatch(changeTaskStatusAC(props.task.id, e.currentTarget.checked, props.id))
+        props.onStatusChangeHandler(props.task.id, e.currentTarget.checked)
     }
 
     const removeClickHandler = () => {
-        dispatch(removeTaskAC(props.task.id, props.id))
+        props.removeClickHandler(props.task.id)
     }
 
     const changeTitle = (title: string) => {
-        dispatch(changeTaskTitleAC(props.task.id, title, props.id))
+        props.changeTitleHandler(props.task.id, title)
     }
 
     return <div key={props.task.id}>

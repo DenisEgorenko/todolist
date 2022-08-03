@@ -1,11 +1,11 @@
-import React, {useCallback} from 'react';
+import React, {ChangeEvent, useCallback} from 'react';
 import {AddItemForm} from './AddItemForm';
 import {EditableSpan} from './EditableSpan';
 import {Button, IconButton} from '@mui/material';
 import {Delete} from '@mui/icons-material';
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../State/store";
-import {addTaskAC} from "../State/TasksReducer";
+import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from '../State/TasksReducer';
 import {changeToDoListFilterAC, changeToDoListTitleAC, removeToDoListAC} from "../State/ToDoListsReducer";
 import {Task} from "./Task";
 
@@ -58,6 +58,18 @@ export const ToDoList = React.memo((props: ToDoListPropsType) => {
         tasksForToDoList = tasks.filter(t => t.isDone === false)
     }
 
+    const onStatusChangeHandler = (taskID: string, value: boolean) => {
+        dispatch(changeTaskStatusAC(taskID, value, props.id))
+    }
+
+    const removeClickHandler = (taskID: string) => {
+        dispatch(removeTaskAC(taskID, props.id))
+    }
+
+    const changeTitleHandler = (taskID: string, title: string) => {
+        dispatch(changeTaskTitleAC(taskID, title, props.id))
+    }
+
     return (
         <div>
             <h3>
@@ -73,8 +85,10 @@ export const ToDoList = React.memo((props: ToDoListPropsType) => {
             <div>
                 {
                     tasksForToDoList.map(task => <Task key={task.id}
-                                                       id={props.id}
                                                        task={task}
+                                                       onStatusChangeHandler={onStatusChangeHandler}
+                                                       removeClickHandler={removeClickHandler}
+                                                       changeTitleHandler={changeTitleHandler}
                     />)
                 }
             </div>

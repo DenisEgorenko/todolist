@@ -1,9 +1,11 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import {AppWithRedux} from "./AppWithRedux";
 import {Provider} from "react-redux";
 import {store} from "./State/store";
+
+
 
 
 ReactDOM.render(
