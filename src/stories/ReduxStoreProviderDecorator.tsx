@@ -4,7 +4,7 @@ import {AppRootStateType} from '../State/store';
 import {combineReducers, createStore} from 'redux';
 import {toDoListsReducer} from '../State/ToDoListsReducer';
 import {TasksReducer} from '../State/TasksReducer';
-import {v1} from 'uuid';
+import {TaskPriority, TaskStatus} from '../api/api';
 
 
 const rootReducer = combineReducers({
@@ -14,22 +14,85 @@ const rootReducer = combineReducers({
 
 const initialGlobalState = {
     toDoLists: [
-        {id: 'toDoList1', title: 'What to learn1', filter: 'all'},
-        {id: 'toDoList2', title: 'What to buy2', filter: 'all'}
+        {id: 'toDoList1', title: 'What to learn', order: 1, addedDate: '', filter: 'all'},
+        {id: 'toDoList2', title: 'What to buy', order: 1, addedDate: '', filter: 'all'}
     ],
     tasks: {
         ['toDoList1']: [
-            {id: v1(), title: 'HTML&CSS', isDone: true},
-            {id: v1(), title: 'JS', isDone: false},
-            {id: v1(), title: 'ReactJS', isDone: false}
+            {
+                id: '1',
+                title: 'HTML&CSS',
+                status: TaskStatus.completed,
+                description: 'string',
+                priority: TaskPriority.Low,
+                startDate: 'string',
+                deadline: 'string',
+                todoListId: 'string',
+                order: 0,
+                addedDate: 'string'
+            },
+            {
+                id: '2',
+                title: 'JS',
+                status: TaskStatus.completed,
+                description: 'string',
+                priority: TaskPriority.Low,
+                startDate: 'string',
+                deadline: 'string',
+                todoListId: 'string',
+                order: 0,
+                addedDate: 'string'
+            },
+            {
+                id: '3',
+                title: 'ReactJS',
+                status: TaskStatus.completed,
+                description: 'string',
+                priority: TaskPriority.Low,
+                startDate: 'string',
+                deadline: 'string',
+                todoListId: 'string',
+                order: 0,
+                addedDate: 'string'
+            },
         ],
         ['toDoList2']: [
-            {id: v1(), title: 'HTML&CSS', isDone: true},
-            {id: v1(), title: 'JS', isDone: true},
-            {id: v1(), title: 'ReactJS', isDone: false},
-            {id: v1(), title: 'ReactJS', isDone: true},
-            {id: v1(), title: 'ReactJS', isDone: false},
-            {id: v1(), title: 'ReactJS', isDone: true}
+            {
+                id: '1',
+                title: 'Что-то 1',
+                status: TaskStatus.completed,
+                description: 'string',
+                priority: TaskPriority.Low,
+                startDate: 'string',
+                deadline: 'string',
+                todoListId: 'string',
+                order: 0,
+                addedDate: 'string'
+            },
+            {
+                id: '2',
+                title: 'JS 2',
+                status: TaskStatus.completed,
+                description: 'string',
+                priority: TaskPriority.Low,
+                startDate: 'string',
+                deadline: 'string',
+                todoListId: 'string',
+                order: 0,
+                addedDate: 'string'
+            },
+            {
+                id: '3',
+                title: 'ReactJS 2',
+                status: TaskStatus.completed,
+                description: 'string',
+                priority: TaskPriority.Low,
+                startDate: 'string',
+                deadline: 'string',
+                todoListId: 'string',
+                order: 0,
+                addedDate: 'string'
+            },
         ]
     }
 }

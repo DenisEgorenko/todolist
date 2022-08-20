@@ -1,7 +1,7 @@
 import React, {ReactNode} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import {AppWithRedux} from "./AppWithRedux";
+import {App} from "./App";
 import {Provider} from "react-redux";
 import {store} from "./State/store";
 
@@ -10,7 +10,7 @@ import {store} from "./State/store";
 
 ReactDOM.render(
     <Provider store={store}>
-        <AppWithRedux/>
+        <App/>
     </Provider>
 
     , document.getElementById('root'));
