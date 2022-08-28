@@ -13,7 +13,7 @@ export enum TaskPriority {
     Middle = 1,
     Hi = 2,
     Urgently = 3,
-    Later = 3
+    Later = 4
 }
 
 export type toDoListType = {

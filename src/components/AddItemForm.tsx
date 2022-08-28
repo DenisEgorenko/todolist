@@ -4,9 +4,10 @@ import {ControlPoint} from '@mui/icons-material';
 
 type AddItemFormProps = {
     addItem: (value: string) => void,
+    disabled?: boolean
 }
 
-export const AddItemForm = React.memo((props: AddItemFormProps) => {
+export const AddItemForm = React.memo(({addItem, disabled = false}: AddItemFormProps) => {
 
     console.log('Add Item Form')
 
@@ -20,14 +21,14 @@ export const AddItemForm = React.memo((props: AddItemFormProps) => {
 
     const onKeyPressHandler = (event: KeyboardEvent<HTMLDivElement>) => {
         if (event.key === 'Enter') {
-            props.addItem(inputValue)
+            addItem(inputValue)
             setInputValue('')
         }
     };
 
     const addTask = (inputValue: string) => {
         if (inputValue.trim() !== '') {
-            props.addItem(inputValue.trim())
+            addItem(inputValue.trim())
             setError('')
             setInputValue('')
         } else {
@@ -39,15 +40,16 @@ export const AddItemForm = React.memo((props: AddItemFormProps) => {
     return (
         <div>
             <TextField
+                disabled={disabled}
                 error={!!error}
                 variant={'filled'}
-                label={"Введите название"}
+                label={'Введите название'}
                 value={inputValue}
                 onChange={onChangeHandler}
                 onKeyPress={onKeyPressHandler}
                 helperText={error}
             />
-            <IconButton onClick={() => {
+            <IconButton disabled={disabled} onClick={() => {
                 addTask(inputValue)
             }}>
                 <ControlPoint/>

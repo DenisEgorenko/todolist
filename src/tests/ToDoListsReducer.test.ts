@@ -6,8 +6,8 @@ import {
     filterValuesType,
     removeToDoListAC,
     toDoListsReducer,
-    toDoListDomainType, setToDoListAC
-} from './ToDoListsReducer';
+    toDoListDomainType, setToDoListAC, changeEntityStatusAC
+} from '../state/ToDoListsReducer';
 import {toDoListType} from '../api/api';
 
 test('correct todolist should be removed', () => {
@@ -16,8 +16,8 @@ test('correct todolist should be removed', () => {
     let toDoList2 = v1()
 
     const startState: Array<toDoListDomainType>  = [
-        {id: toDoList1, title: 'What to learn', addedDate: '', order: 0, filter: 'all'},
-        {id: toDoList2, title: 'What to buy', addedDate: '', order: 0, filter: 'all'},
+        {id: toDoList1, title: 'What to learn', addedDate: '', order: 0, filter: 'all', entityStatus: 'idle'},
+        {id: toDoList2, title: 'What to buy', addedDate: '', order: 0, filter: 'all', entityStatus: 'idle'},
     ]
 
     const endState = toDoListsReducer(startState, removeToDoListAC(toDoList1))
@@ -34,8 +34,8 @@ test('correct todolist should be added', () => {
 
 
     const startState: Array<toDoListDomainType>  = [
-        {id: '1', title: 'What to learn', addedDate: '', order: 0, filter: 'all'},
-        {id: '2', title: 'What to buy', addedDate: '', order: 0, filter: 'all'},
+        {id: '1', title: 'What to learn', addedDate: '', order: 0, filter: 'all', entityStatus: 'idle'},
+        {id: '2', title: 'What to buy', addedDate: '', order: 0, filter: 'all', entityStatus: 'idle'},
     ]
 
     const endState = toDoListsReducer(startState, addToDoListAC({id: '2', title: 'New', addedDate: '', order: 0}))
@@ -54,8 +54,8 @@ test('correct todolist should change its name', () => {
     let newToDoListTitle = 'New ToDoList'
 
     const startState: Array<toDoListDomainType>  = [
-        {id: toDoList1, title: 'What to learn', addedDate: '', order: 0, filter: 'all'},
-        {id: toDoList2, title: 'What to buy', addedDate: '', order: 0, filter: 'all'},
+        {id: toDoList1, title: 'What to learn', addedDate: '', order: 0, filter: 'all', entityStatus: 'idle'},
+        {id: toDoList2, title: 'What to buy', addedDate: '', order: 0, filter: 'all', entityStatus: 'idle'},
     ]
 
     const endState = toDoListsReducer(startState, changeToDoListTitleAC(toDoList2, newToDoListTitle))
@@ -72,8 +72,8 @@ test('correct filter of todolist should be changed', () => {
     let newFilter: filterValuesType = 'completed'
 
     const startState: Array<toDoListDomainType>  = [
-        {id: toDoList1, title: 'What to learn', addedDate: '', order: 0, filter: 'all'},
-        {id: toDoList2, title: 'What to buy', addedDate: '', order: 0, filter: 'all'},
+        {id: toDoList1, title: 'What to learn', addedDate: '', order: 0, filter: 'all', entityStatus: 'idle'},
+        {id: toDoList2, title: 'What to buy', addedDate: '', order: 0, filter: 'all', entityStatus: 'idle'},
     ]
 
     const endState = toDoListsReducer(startState, changeToDoListFilterAC(toDoList2, newFilter))
@@ -101,4 +101,21 @@ test('todolists should be set', () => {
 
     expect(endState[0].filter).toBe('all')
     expect(endState.length).toBe(2)
+})
+
+
+test('entity status should be changed', () => {
+
+    let toDoList1 = v1()
+    let toDoList2 = v1()
+
+    const startState: Array<toDoListDomainType>  = [
+        {id: toDoList1, title: 'What to learn', addedDate: '', order: 0, filter: 'all', entityStatus: 'idle'},
+        {id: toDoList2, title: 'What to buy', addedDate: '', order: 0, filter: 'all', entityStatus: 'idle'},
+    ]
+
+    const endState = toDoListsReducer(startState, changeEntityStatusAC(toDoList2, 'loading'))
+
+    expect(endState[0].entityStatus).toBe('idle')
+    expect(endState[1].entityStatus).toBe('loading')
 })
