@@ -14,6 +14,7 @@ import {
 } from '../state/ToDoListsReducer';
 import {Task} from './Task';
 import {TaskStatus, taskType} from '../api/api';
+import {Navigate} from 'react-router-dom';
 
 
 type ToDoListPropsType = {
@@ -80,6 +81,8 @@ export const ToDoList = React.memo(({demo = false, ...props}: ToDoListPropsType)
     const changeTitleHandler = (taskID: string, title: string) => {
         dispatch(updateTaskTC(props.toDoList.id, taskID, {title: title}))
     }
+
+
 
     return (
         <div>

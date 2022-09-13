@@ -96,12 +96,21 @@ const initialGlobalState: RootState = {
                 order: 0,
                 addedDate: 'string'
             },
-        ]
+        ],
+
     },
 
     app: {
         status: 'idle',
-        error: null
+        error: null,
+        isInitialized: false
+    },
+
+    auth: {
+        id: null,
+        email: '',
+        login: '',
+        isLoggedIn: false
     }
 }
 

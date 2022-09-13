@@ -5,6 +5,7 @@ import React, {useCallback, useEffect} from 'react';
 import {Grid, Paper} from '@mui/material';
 import {AddItemForm} from './AddItemForm';
 import {ToDoList} from './ToDoList';
+import {Navigate} from 'react-router-dom';
 
 type toDoListListPropsType = {
     demo?: boolean
@@ -13,9 +14,10 @@ type toDoListListPropsType = {
 export const ToDoListsList = ({demo = false}: toDoListListPropsType) => {
     const dispatch = useAppDispatch()
     const toDoLists = useSelector<AppRootStateType, Array<toDoListDomainType>>(state => state.toDoLists)
+    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
 
     useEffect(() => {
-        if (demo) {
+        if (demo|| !isLoggedIn) {
             return
         }
         dispatch(fetchToDoListTC())
@@ -26,6 +28,10 @@ export const ToDoListsList = ({demo = false}: toDoListListPropsType) => {
             dispatch(addToDoListTC(value))
         }, []
     )
+
+    if (!isLoggedIn) {
+        return <Navigate to={'/login'}/>
+    }
 
     return (
         <>

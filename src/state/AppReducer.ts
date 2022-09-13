@@ -1,24 +1,33 @@
 // types
 
+import {bool} from 'prop-types';
+import {loginAPI} from '../api/api';
+import {AppThunk} from './store';
+import {handleServerAppError, handleServerNetworkError} from '../utils/errorUtils';
+import {setIsLoggedInAC, setUserIdAC} from './AuthReducer';
+
 export type statusType = 'idle' | 'loading' | 'succeeded' | 'failed'
 export type errorType = string | null
 
 
 export type appStateType = {
-    status: statusType
-    error: errorType
+    status: statusType,
+    error: errorType,
+    isInitialized: boolean
 }
 
 export type appActionType =
     ReturnType<typeof setAppStatusAC>
     | ReturnType<typeof setAppErrorAC>
+    | ReturnType<typeof setInitializedAC>
 
 
 // reducer
 
 const initialState: appStateType = {
     status: 'idle',
-    error: null
+    error: null,
+    isInitialized: false
 }
 
 export const appReducer = (state: appStateType = initialState, action: appActionType): appStateType => {
@@ -28,6 +37,10 @@ export const appReducer = (state: appStateType = initialState, action: appAction
         }
         case 'APP/SET-ERROR' : {
             return {...state, error: action.error}
+        }
+
+        case 'APP/SET-INITIALIZED' : {
+            return {...state, isInitialized: action.status}
         }
         default: {
             return state
@@ -46,10 +59,28 @@ export const setAppErrorAC = (error: string | null) => ({
     type: 'APP/SET-ERROR', error: error
 } as const)
 
+export const setInitializedAC = (status: boolean) => ({
+    type: 'APP/SET-INITIALIZED', status
+} as const)
+
 // thunks
 
-// export const fetchToDoListTC = (): AppThunk => (dispatch) => {
-//     toDoListsAPI.getToDoLists().then(res => {
-//         dispatch(setToDoListAC(res.data))
-//     })
-// }
+export const initializeAppTC = (): AppThunk => async (dispatch) => {
+
+    try {
+        const res = await loginAPI.initialize()
+
+        if (res.data.resultCode === 0) {
+            dispatch(setIsLoggedInAC(true))
+        } else {
+            dispatch(setIsLoggedInAC(false))
+            handleServerAppError(res.data, dispatch)
+        }
+        dispatch(setInitializedAC(true))
+
+    } catch (err: any) {
+        handleServerNetworkError(err, dispatch)
+        console.log(err)
+    }
+
+}

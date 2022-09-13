@@ -6,7 +6,8 @@ test('correct Error should be set', () => {
 
     const startState: appStateType = {
         status: 'idle',
-        error: null
+        error: null,
+        isInitialized: false
     }
 
     const endState = appReducer(startState, setAppErrorAC('Error'))
@@ -20,7 +21,8 @@ test('correct status should be set', () => {
 
     const startState: appStateType = {
         status: 'idle',
-        error: null
+        error: null,
+        isInitialized: false
     }
 
     const endState = appReducer(startState, setAppStatusAC('succeeded'))

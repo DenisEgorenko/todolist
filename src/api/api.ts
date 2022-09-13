@@ -37,7 +37,6 @@ export type taskType = {
 }
 
 
-
 export type responseType<D = {}> = {
     resultCode: number
     messages: string[],
@@ -60,7 +59,6 @@ export type updateTaskType = {
     startDate: string
     deadline: string
 }
-
 
 
 const instance = axios.create({
@@ -106,4 +104,27 @@ export const tasksAPI = {
     updateTasks(todolistId: string, taskId: string, data: updateTaskType) {
         return instance.put<responseType<{ item: taskType }>>(`todo-lists/${todolistId}/tasks/${taskId}`, data)
     },
+}
+
+
+export type loginParamsType = {
+    email: string,
+    password: string,
+    rememberMe: boolean,
+    captcha?: string
+}
+
+export const loginAPI = {
+
+    initialize() {
+        return instance.get<responseType<{id: number, email: string, login: string}>>('/auth/me')
+    },
+
+    login(data: loginParamsType) {
+        return instance.post<responseType<{ userId: number }>>('/auth/login', data)
+    },
+
+    logout() {
+        return instance.delete<responseType<{}>>('/auth/login')
+    }
 }
