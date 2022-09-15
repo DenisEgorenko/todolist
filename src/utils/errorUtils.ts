@@ -2,17 +2,17 @@ import {setAppErrorAC, setAppStatusAC} from '../state/AppReducer';
 import {responseType} from '../api/api';
 import {AppDispatch} from '../state/store';
 
-export const handleServerAppError = (data: responseType, dispatch: AppDispatch) => {
+export const handleServerAppError = (data: responseType, dispatch: any) => {
     if (data.messages.length) {
-        dispatch(setAppErrorAC(data.messages[0]))
+        dispatch(setAppErrorAC({error: data.messages[0]}))
     } else {
-        dispatch(setAppErrorAC('Some Error'))
+        dispatch(setAppErrorAC({error: 'Some Error'}))
     }
-    dispatch(setAppStatusAC('failed'))
+    dispatch(setAppStatusAC({status: 'failed'}))
 }
 
 
-export const handleServerNetworkError = (error: { message: string }, dispatch: AppDispatch) => {
-    dispatch(setAppErrorAC(error.message ? error.message : 'Some Error'))
-    dispatch(setAppStatusAC('failed'))
+export const handleServerNetworkError = (error: { message: string }, dispatch: any) => {
+    dispatch(setAppErrorAC({error: error.message ? error.message : 'Some Error'}))
+    dispatch(setAppStatusAC({status: 'failed'}))
 }

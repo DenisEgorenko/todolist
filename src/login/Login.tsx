@@ -1,9 +1,8 @@
 import React from 'react'
 import {Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, TextField} from '@mui/material';
 import {useFormik} from 'formik';
-import {AppRootStateType, useAppDispatch} from '../state/store';
+import {useAppDispatch, useAppSelector} from '../state/store';
 import {loginTC} from '../state/AuthReducer';
-import {useSelector} from 'react-redux';
 import {Navigate} from 'react-router-dom';
 
 type LoginProps = {}
@@ -14,7 +13,7 @@ function Login(props: LoginProps) {
     const dispatch = useAppDispatch()
 
 
-    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
+    const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn)
 
     const formik = useFormik({
         initialValues: {

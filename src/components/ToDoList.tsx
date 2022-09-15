@@ -3,8 +3,7 @@ import {AddItemForm} from './AddItemForm';
 import {EditableSpan} from './EditableSpan';
 import {Button, IconButton} from '@mui/material';
 import {Delete} from '@mui/icons-material';
-import {useSelector} from 'react-redux';
-import {AppRootStateType, useAppDispatch} from '../state/store';
+import {useAppDispatch, useAppSelector} from '../state/store';
 import {addTaskAC, addTaskTC, fetchTasksTC, removeTaskTC, updateTaskTC} from '../state/TasksReducer';
 import {
     changeToDoListFilterAC,
@@ -14,7 +13,6 @@ import {
 } from '../state/ToDoListsReducer';
 import {Task} from './Task';
 import {TaskStatus, taskType} from '../api/api';
-import {Navigate} from 'react-router-dom';
 
 
 type ToDoListPropsType = {
@@ -25,7 +23,7 @@ type ToDoListPropsType = {
 export const ToDoList = React.memo(({demo = false, ...props}: ToDoListPropsType) => {
 
     const dispatch = useAppDispatch()
-    const tasks = useSelector<AppRootStateType, Array<taskType>>(state => state.tasks[props.toDoList.id])
+    const tasks = useAppSelector<Array<taskType>>(state => state.tasks[props.toDoList.id])
 
 
     useEffect(() => {
@@ -37,13 +35,13 @@ export const ToDoList = React.memo(({demo = false, ...props}: ToDoListPropsType)
 
 
     const onAllClickHandler = useCallback(() => {
-        dispatch(changeToDoListFilterAC(props.toDoList.id, 'all'))
+        dispatch(changeToDoListFilterAC({listId: props.toDoList.id, filter: 'all'}))
     }, [props.toDoList.id])
     const onActiveClickHandler = useCallback(() => {
-        dispatch(changeToDoListFilterAC(props.toDoList.id, 'active'))
+        dispatch(changeToDoListFilterAC({listId: props.toDoList.id, filter: 'active'}))
     }, [props.toDoList.id])
     const onCompletedClickHandler = useCallback(() => {
-        dispatch(changeToDoListFilterAC(props.toDoList.id, 'completed'))
+        dispatch(changeToDoListFilterAC({listId: props.toDoList.id, filter: 'completed'}))
     }, [props.toDoList.id])
 
 
@@ -81,7 +79,6 @@ export const ToDoList = React.memo(({demo = false, ...props}: ToDoListPropsType)
     const changeTitleHandler = (taskID: string, title: string) => {
         dispatch(updateTaskTC(props.toDoList.id, taskID, {title: title}))
     }
-
 
 
     return (

@@ -1,5 +1,5 @@
-import {removeTaskAC, TasksReducer} from '../state/TasksReducer';
-import {appReducer, appStateType, setAppErrorAC, setAppStatusAC} from '../state/AppReducer';
+import TasksReducer, {removeTaskAC} from '../state/TasksReducer';
+import appReducer, {appStateType, setAppErrorAC, setAppStatusAC} from '../state/AppReducer';
 
 
 test('correct Error should be set', () => {
@@ -10,7 +10,7 @@ test('correct Error should be set', () => {
         isInitialized: false
     }
 
-    const endState = appReducer(startState, setAppErrorAC('Error'))
+    const endState = appReducer(startState, setAppErrorAC({error: 'Error'}))
 
     expect(endState.error).toBe('Error')
 
@@ -25,7 +25,7 @@ test('correct status should be set', () => {
         isInitialized: false
     }
 
-    const endState = appReducer(startState, setAppStatusAC('succeeded'))
+    const endState = appReducer(startState, setAppStatusAC({status: 'succeeded'}))
 
     expect(endState.status).toBe('succeeded')
 

@@ -1,5 +1,4 @@
-import {AppRootStateType, useAppDispatch} from '../state/store';
-import {useSelector} from 'react-redux';
+import {useAppDispatch, useAppSelector} from '../state/store';
 import {addToDoListTC, fetchToDoListTC, toDoListDomainType} from '../state/ToDoListsReducer';
 import React, {useCallback, useEffect} from 'react';
 import {Grid, Paper} from '@mui/material';
@@ -13,8 +12,8 @@ type toDoListListPropsType = {
 
 export const ToDoListsList = ({demo = false}: toDoListListPropsType) => {
     const dispatch = useAppDispatch()
-    const toDoLists = useSelector<AppRootStateType, Array<toDoListDomainType>>(state => state.toDoLists)
-    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
+    const toDoLists = useAppSelector<Array<toDoListDomainType>>(state => state.toDoLists)
+    const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn)
 
     useEffect(() => {
         if (demo|| !isLoggedIn) {

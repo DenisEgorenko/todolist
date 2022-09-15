@@ -13,10 +13,9 @@ import {
 import {Menu} from '@mui/icons-material';
 import {ToDoListsList} from './components/ToDoListsList';
 import {ErrorSnackbar} from './components/ErrorSnackBar';
-import {useSelector} from 'react-redux';
-import {AppRootStateType, useAppDispatch} from './state/store';
+import {useAppDispatch, useAppSelector} from './state/store';
 import {initializeAppTC, statusType} from './state/AppReducer';
-import {Navigate, Route, Routes} from 'react-router-dom';
+import {Route, Routes} from 'react-router-dom';
 import Login from './login/Login';
 import {logoutTC} from './state/AuthReducer';
 
@@ -26,10 +25,10 @@ type appPropsType = {
 
 export const App = React.memo(({demo = false}: appPropsType) => {
 
-    const status = useSelector<AppRootStateType, statusType>(state => state.app.status)
-    const isInitialized = useSelector<AppRootStateType, boolean>(state => state.app.isInitialized)
+    const status = useAppSelector<statusType>(state => state.app.status)
+    const isInitialized = useAppSelector<boolean>(state => state.app.isInitialized)
     const dispatch = useAppDispatch()
-    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
+    const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn)
 
 
     useEffect(()=>{
