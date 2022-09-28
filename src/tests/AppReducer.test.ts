@@ -1,4 +1,3 @@
-import TasksReducer, {removeTaskAC} from '../state/TasksReducer';
 import appReducer, {appStateType, setAppErrorAC, setAppStatusAC} from '../state/AppReducer';
 
 

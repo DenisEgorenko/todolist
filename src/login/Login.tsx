@@ -1,12 +1,18 @@
 import React from 'react'
 import {Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, TextField} from '@mui/material';
-import {useFormik} from 'formik';
+import {FormikHelpers, useFormik} from 'formik';
 import {useAppDispatch, useAppSelector} from '../state/store';
 import {loginTC} from '../state/AuthReducer';
 import {Navigate} from 'react-router-dom';
 
 type LoginProps = {}
 
+
+type formValueType = {
+    email: string,
+    password: string,
+    rememberMe: boolean
+}
 
 function Login(props: LoginProps) {
 
@@ -33,9 +39,14 @@ function Login(props: LoginProps) {
                 }
             }
         },
-        onSubmit: values => {
-            dispatch(loginTC(values))
-            // alert(JSON.stringify(values));
+        onSubmit: async (values, formikHelpers: FormikHelpers<formValueType>) => {
+            const action = await dispatch(loginTC(values))
+            if (loginTC.rejected.match(action)) {
+                if (action.payload?.fieldErrors?.length) {
+                    const error = action.payload?.fieldErrors[0]
+                    formikHelpers.setFieldError(error.field, error.error)
+                }
+            }
         },
     });
 

@@ -1,5 +1,5 @@
-import TasksReducer, {addTaskAC, removeTaskAC, setTasksAC, TasksStateType, updateTaskAC} from '../state/TasksReducer';
-import {removeToDoListAC, setToDoListAC} from '../state/ToDoListsReducer';
+import TasksReducer, {addTaskTC, fetchTasksTC, removeTaskTC, TasksStateType, updateTaskAC} from '../state/TasksReducer';
+import {fetchToDoListTC, removeToDoListTC} from '../state/ToDoListsReducer';
 import {TaskPriority, TaskStatus, updateTaskType} from '../api/api';
 
 
@@ -56,7 +56,10 @@ test('correct task should be deleted from correct array', () => {
         ]
     }
 
-    const endState = TasksReducer(startState, removeTaskAC({listId: 'todolistId2', taskId: '2'}))
+    const endState = TasksReducer(startState, removeTaskTC.fulfilled({
+        listId: 'todolistId2',
+        taskId: '2'
+    }, '', {toDoListID: 'todolistId2', taskID: '2'}))
 
     expect(endState['todolistId1'].length).toBe(1)
     expect(endState['todolistId2'].length).toBe(2)
@@ -99,20 +102,21 @@ test('correct task should be added to correct array', () => {
         ]
     }
 
-    const endState = TasksReducer(startState, addTaskAC({
-        data: {
-            id: '1',
-            title: 'juice',
-            status: TaskStatus.InProgress,
-            description: 'string',
-            priority: TaskPriority.Low,
-            startDate: 'string',
-            deadline: 'string',
-            todoListId: 'todolistId2',
-            order: 0,
-            addedDate: 'string'
-        }
-    }))
+    const endState = TasksReducer(startState, addTaskTC.fulfilled(
+        {
+            data: {
+                id: '1',
+                title: 'juice',
+                status: TaskStatus.InProgress,
+                description: 'string',
+                priority: TaskPriority.Low,
+                startDate: 'string',
+                deadline: 'string',
+                todoListId: 'todolistId2',
+                order: 0,
+                addedDate: 'string'
+            }
+        }, '', {toDoListID: 'todolistId2', value: ''}))
 
     expect(endState['todolistId1'].length).toBe(1)
     expect(endState['todolistId2'].length).toBe(2)
@@ -246,7 +250,7 @@ test('property with todolist should be deleted', () => {
         ]
     }
 
-    const endState = TasksReducer(startState, removeToDoListAC({listId: 'todolistId2'}))
+    const endState = TasksReducer(startState, removeToDoListTC.fulfilled({listId: 'todolistId2'}, '', ''))
 
     const keys = Object.keys(endState)
 
@@ -258,12 +262,12 @@ test('property with todolist should be deleted', () => {
 test('property with todolist should be deleted', () => {
 
 
-    const action = setToDoListAC({
+    const action = fetchToDoListTC.fulfilled({
         toDoLists: [
             {id: '1', title: 'What to learn', addedDate: '', order: 0},
             {id: '2', title: 'What to buy', addedDate: '', order: 0},
         ]
-    })
+    }, '', '')
 
     const endState = TasksReducer({}, action)
 
@@ -305,7 +309,7 @@ test('Tasks should be added', () => {
     ]
 
 
-    const action = setTasksAC({toDoListID: '1', tasks})
+    const action = fetchTasksTC.fulfilled({toDoListID: '1', tasks}, 'requestId', '1')
 
     const endState = TasksReducer({['1']: [], ['2']: []}, action)
 

@@ -1,8 +1,8 @@
-import {loginAPI, loginParamsType, tasksAPI} from '../api/api';
-import {AppThunk} from './store';
+import {fieldErrorType, loginAPI, loginParamsType} from '../api/api';
 import {setAppStatusAC} from './AppReducer';
 import {handleServerAppError, handleServerNetworkError} from '../utils/errorUtils';
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {AxiosError} from 'axios';
 
 // types
 export type authStateType = {
@@ -15,72 +15,84 @@ export type authStateType = {
 
 export type authActionType =
     ReturnType<typeof setIsLoggedInAC>
-    | ReturnType<typeof setUserIdAC>
-
 // reducer
-
-const initialState: authStateType = {
-    id: null,
-    email: '',
-    login: '',
-    isLoggedIn: false
-}
-
 
 const slice = createSlice({
     name: 'auth',
-    initialState: initialState,
+    initialState: {
+        id: null,
+        email: '',
+        login: '',
+        isLoggedIn: false
+    } as authStateType,
     reducers: {
         setIsLoggedInAC(state, action: PayloadAction<{ status: boolean }>) {
             state.isLoggedIn = action.payload.status
         },
-        setUserIdAC(state, action: PayloadAction<{ id: number | null }>) {
-            state.id = action.payload.id
-        },
     },
+    extraReducers: (builder) => {
+        builder
+            .addCase(loginTC.fulfilled, (state) => {
+                state.isLoggedIn = true
+            })
+            .addCase(logoutTC.fulfilled, (state) => {
+                state.isLoggedIn = false
+            })
+    }
 })
 
 
 export default slice.reducer
-export const {setIsLoggedInAC, setUserIdAC} = slice.actions
+export const {setIsLoggedInAC} = slice.actions
 
 
 // thunks
 
-export const loginTC = (data: loginParamsType): AppThunk => async (dispatch) => {
-    dispatch(setAppStatusAC({status: 'loading'}))
+export const loginTC = createAsyncThunk<any,
+    loginParamsType,
+    { rejectValue: { errors: string[], fieldErrors?: fieldErrorType } }>('auth/login', async (data, thunkAPI) => {
+
+    thunkAPI.dispatch(setAppStatusAC({status: 'loading'}))
+
     try {
         const res = await loginAPI.login(data)
 
+
         if (res.data.resultCode === 0) {
-            dispatch(setIsLoggedInAC({status: true}))
-            dispatch(setUserIdAC({id: res.data.data.userId}))
-            dispatch(setAppStatusAC({status: 'succeeded'}))
+            thunkAPI.dispatch(setAppStatusAC({status: 'succeeded'}))
         } else {
-            handleServerAppError(res.data, dispatch)
+            handleServerAppError(res.data, thunkAPI.dispatch)
+            return thunkAPI.rejectWithValue({errors: res.data.messages, fieldErrors: res.data.fieldErrors})
         }
 
-    } catch (err: any) {
-        handleServerNetworkError(err, dispatch)
-        console.log(err)
-    }
-}
+    } catch (e) {
+        const err = e as Error | AxiosError<{ error: string }>
+        handleServerNetworkError(err, thunkAPI.dispatch)
+        return thunkAPI.rejectWithValue({errors: [err.message], fieldErrors: undefined})
+    } finally {
 
-export const logoutTC = (): AppThunk => async (dispatch) => {
-    dispatch(setAppStatusAC({status: 'loading'}))
+    }
+})
+
+export const logoutTC = createAsyncThunk('auth/logout', async (data: {}, thunkAPI) => {
+
+    thunkAPI.dispatch(setAppStatusAC({status: 'loading'}))
+
     try {
         const res = await loginAPI.logout()
 
         if (res.data.resultCode === 0) {
-            dispatch(setIsLoggedInAC({status: false}))
-            dispatch(setUserIdAC({id: null}))
-            dispatch(setAppStatusAC({status: 'succeeded'}))
+            thunkAPI.dispatch(setAppStatusAC({status: 'succeeded'}))
         } else {
-            handleServerAppError(res.data, dispatch)
+            handleServerAppError(res.data, thunkAPI.dispatch)
+            return Promise.reject()
         }
 
-    } catch (err: any) {
-        handleServerNetworkError(err, dispatch)
-        console.log(err)
+    } catch (e) {
+        const err = e as Error | AxiosError<{ error: string }>
+        handleServerNetworkError(err, thunkAPI.dispatch)
+        return Promise.reject()
+    } finally {
+
     }
-}
+})

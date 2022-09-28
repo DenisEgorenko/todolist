@@ -36,8 +36,10 @@ export type taskType = {
     addedDate: string
 }
 
+export type fieldErrorType = Array<{ field: string, error: string }>
 
 export type responseType<D = {}> = {
+    fieldErrors: fieldErrorType
     resultCode: number
     messages: string[],
     data: D
@@ -117,7 +119,7 @@ export type loginParamsType = {
 export const loginAPI = {
 
     initialize() {
-        return instance.get<responseType<{id: number, email: string, login: string}>>('/auth/me')
+        return instance.get<responseType<{ id: number, email: string, login: string }>>('/auth/me')
     },
 
     login(data: loginParamsType) {

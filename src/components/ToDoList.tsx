@@ -4,7 +4,7 @@ import {EditableSpan} from './EditableSpan';
 import {Button, IconButton} from '@mui/material';
 import {Delete} from '@mui/icons-material';
 import {useAppDispatch, useAppSelector} from '../state/store';
-import {addTaskAC, addTaskTC, fetchTasksTC, removeTaskTC, updateTaskTC} from '../state/TasksReducer';
+import {addTaskTC, fetchTasksTC, removeTaskTC, updateTaskTC} from '../state/TasksReducer';
 import {
     changeToDoListFilterAC,
     changeToDoListTitleTC,
@@ -50,12 +50,12 @@ export const ToDoList = React.memo(({demo = false, ...props}: ToDoListPropsType)
     }
 
     const addTask = useCallback((value: string) => {
-        dispatch(addTaskTC(props.toDoList.id, value))
-    }, [addTaskAC, props.toDoList.id])
+        dispatch(addTaskTC({toDoListID: props.toDoList.id, value: value}))
+    }, [addTaskTC.fulfilled, props.toDoList.id])
 
 
     const changeListTitle = useCallback((title: string) => {
-        dispatch(changeToDoListTitleTC(props.toDoList.id, title))
+        dispatch(changeToDoListTitleTC({listId: props.toDoList.id, title: title}))
     }, [props.toDoList.id])
 
 
@@ -69,15 +69,27 @@ export const ToDoList = React.memo(({demo = false, ...props}: ToDoListPropsType)
 
     const onStatusChangeHandler = (taskID: string, value: TaskStatus) => {
         debugger
-        dispatch(updateTaskTC(props.toDoList.id, taskID, {status: value}))
+        dispatch(updateTaskTC({
+                    toDoListID: props.toDoList.id, taskID: taskID,
+                    updateModel: {
+                        status: value
+                    }
+                }
+            )
+        )
     }
 
     const removeClickHandler = (taskID: string) => {
-        dispatch(removeTaskTC(props.toDoList.id, taskID))
+        dispatch(removeTaskTC({toDoListID: props.toDoList.id, taskID}))
     }
 
     const changeTitleHandler = (taskID: string, title: string) => {
-        dispatch(updateTaskTC(props.toDoList.id, taskID, {title: title}))
+        dispatch(updateTaskTC({
+                    toDoListID: props.toDoList.id, taskID: taskID,
+                    updateModel: {title: title}
+                }
+            )
+        )
     }
 
 

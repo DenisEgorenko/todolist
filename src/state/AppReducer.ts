@@ -1,10 +1,9 @@
-// types
-
 import {loginAPI} from '../api/api';
 import {AppThunk} from './store';
 import {handleServerAppError, handleServerNetworkError} from '../utils/errorUtils';
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {setIsLoggedInAC} from './AuthReducer';
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {AxiosError} from 'axios';
 
 export type statusType = 'idle' | 'loading' | 'succeeded' | 'failed'
 export type errorType = string | null
@@ -19,21 +18,17 @@ export type appStateType = {
 export type appActionType =
     ReturnType<typeof setAppStatusAC>
     | ReturnType<typeof setAppErrorAC>
-    | ReturnType<typeof setInitializedAC>
 
 
 // reducer
 
-const initialState: appStateType = {
-    status: 'idle',
-    error: null,
-    isInitialized: false
-}
-
-
 const slice = createSlice({
     name: 'app',
-    initialState: initialState,
+    initialState: {
+        status: 'idle',
+        error: null,
+        isInitialized: false
+    } as appStateType,
     reducers: {
         setAppStatusAC(state, action: PayloadAction<{ status: statusType }>) {
             state.status = action.payload.status
@@ -41,35 +36,42 @@ const slice = createSlice({
         setAppErrorAC(state, action: PayloadAction<{ error: string | null }>) {
             state.error = action.payload.error
         },
-        setInitializedAC(state, action: PayloadAction<{ status: boolean }>) {
-            state.isInitialized = action.payload.status
-        },
+        // setInitializedAC(state, action: PayloadAction<{ status: boolean }>) {
+        //     state.isInitialized = action.payload.status
+        // },
     },
+    extraReducers: (builder) => {
+        builder
+            .addCase(initializeAppTC.fulfilled, (state) => {
+                state.isInitialized = true
+            })
+    }
+
+
 })
 
 
 export default slice.reducer
-export const {setAppStatusAC, setAppErrorAC, setInitializedAC} = slice.actions
+export const {setAppStatusAC, setAppErrorAC} = slice.actions
 
 
 // thunks
 
-export const initializeAppTC = (): AppThunk => async (dispatch) => {
-
+export const initializeAppTC = createAsyncThunk('app/initializeApp', async (data: {}, thunkAPI) => {
     try {
         const res = await loginAPI.initialize()
 
         if (res.data.resultCode === 0) {
-            dispatch(setIsLoggedInAC({status: true}))
+            thunkAPI.dispatch(setIsLoggedInAC({status: true}))
         } else {
-            dispatch(setIsLoggedInAC({status: false}))
-            handleServerAppError(res.data, dispatch)
+            thunkAPI.dispatch(setIsLoggedInAC({status: false}))
+            handleServerAppError(res.data, thunkAPI.dispatch)
         }
-        dispatch(setInitializedAC({status: true}))
+        // thunkAPI.dispatch(setInitializedAC({status: true}))
 
-    } catch (err: any) {
-        handleServerNetworkError(err, dispatch)
-        console.log(err)
+    } catch (e) {
+        const err = e as Error | AxiosError<{ error: string }>
+        handleServerNetworkError(err, thunkAPI.dispatch)
+        return Promise.reject()
     }
-
-}
+})

@@ -31,16 +31,17 @@ export const App = React.memo(({demo = false}: appPropsType) => {
     const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn)
 
 
-    useEffect(()=>{
-        dispatch(initializeAppTC())
+    useEffect(() => {
+        dispatch(initializeAppTC({}))
     }, [])
 
     if (!isInitialized) {
-        return <div style={{display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center'}}><CircularProgress/></div>
+        return <div style={{display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center'}}>
+            <CircularProgress/></div>
     }
 
     const logoutHandler = () => {
-        dispatch(logoutTC())
+        dispatch(logoutTC({}))
     }
 
     return (
@@ -54,7 +55,7 @@ export const App = React.memo(({demo = false}: appPropsType) => {
                     <Typography variant="h6">
                         News
                     </Typography>
-                    {isLoggedIn ? <Button onClick={logoutHandler} color={'inherit'}>Logout</Button>: null}
+                    {isLoggedIn ? <Button onClick={logoutHandler} color={'inherit'}>Logout</Button> : null}
                 </Toolbar>
             </AppBar>
             {status === 'loading' && <LinearProgress/>}

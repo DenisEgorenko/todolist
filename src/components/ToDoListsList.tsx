@@ -19,7 +19,7 @@ export const ToDoListsList = ({demo = false}: toDoListListPropsType) => {
         if (demo|| !isLoggedIn) {
             return
         }
-        dispatch(fetchToDoListTC())
+        dispatch(fetchToDoListTC({}))
     }, [])
 
     const addToDoList = useCallback(
