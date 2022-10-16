@@ -5,6 +5,7 @@ import {Grid, Paper} from '@mui/material';
 import {AddItemForm} from './AddItemForm';
 import {ToDoList} from './ToDoList';
 import {Navigate} from 'react-router-dom';
+import {selectIsLoggedIn} from "../state/selectors";
 
 type toDoListListPropsType = {
     demo?: boolean
@@ -13,7 +14,7 @@ type toDoListListPropsType = {
 export const ToDoListsList = ({demo = false}: toDoListListPropsType) => {
     const dispatch = useAppDispatch()
     const toDoLists = useAppSelector<Array<toDoListDomainType>>(state => state.toDoLists)
-    const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn)
+    const isLoggedIn = useAppSelector(selectIsLoggedIn)
 
     useEffect(() => {
         if (demo|| !isLoggedIn) {

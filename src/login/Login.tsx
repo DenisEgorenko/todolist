@@ -4,6 +4,7 @@ import {FormikHelpers, useFormik} from 'formik';
 import {useAppDispatch, useAppSelector} from '../state/store';
 import {loginTC} from '../state/AuthReducer';
 import {Navigate} from 'react-router-dom';
+import {selectIsLoggedIn} from "../state/selectors";
 
 type LoginProps = {}
 
@@ -19,7 +20,7 @@ function Login(props: LoginProps) {
     const dispatch = useAppDispatch()
 
 
-    const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn)
+    const isLoggedIn = useAppSelector(selectIsLoggedIn)
 
     const formik = useFormik({
         initialValues: {

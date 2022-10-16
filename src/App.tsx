@@ -13,22 +13,25 @@ import {
 import {Menu} from '@mui/icons-material';
 import {ToDoListsList} from './components/ToDoListsList';
 import {ErrorSnackbar} from './components/ErrorSnackBar';
-import {useAppDispatch, useAppSelector} from './state/store';
+import {RootState, useAppDispatch, useAppSelector} from './state/store';
 import {initializeAppTC, statusType} from './state/AppReducer';
 import {Route, Routes} from 'react-router-dom';
 import Login from './login/Login';
 import {logoutTC} from './state/AuthReducer';
+import {selectIsInitialized, selectIsLoggedIn, selectStatus} from "./state/selectors";
 
 type appPropsType = {
     demo?: boolean
 }
 
+
 export const App = React.memo(({demo = false}: appPropsType) => {
 
-    const status = useAppSelector<statusType>(state => state.app.status)
-    const isInitialized = useAppSelector<boolean>(state => state.app.isInitialized)
+    const status = useAppSelector(selectStatus)
+    const isInitialized = useAppSelector(selectIsInitialized)
+    const isLoggedIn = useAppSelector(selectIsLoggedIn)
+
     const dispatch = useAppDispatch()
-    const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn)
 
 
     useEffect(() => {
